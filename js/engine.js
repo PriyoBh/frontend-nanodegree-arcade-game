@@ -23,10 +23,11 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        isGameOver = false,
         lastTime;
 
     canvas.width = 505;
-    canvas.height = 606;
+    canvas.height = 581;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -56,7 +57,13 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if (!isGameOver) {
+            win.requestAnimationFrame(main);    
+        }
+        else {
+            //if the game is over do not request the animation again
+        }
+        
     };
 
     /* This function does some initial setup that should only occur once,
@@ -64,7 +71,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+//        reset();
         lastTime = Date.now();
         main();
     }
@@ -80,7 +87,8 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions(player,allEnemies,dt);
+        checkGameOver(player);
     }
 
     /* This is called by the update function  and loops through all of the
@@ -90,12 +98,52 @@ var Engine = (function(global) {
      * the data/properties related to  the object. Do your drawing in your
      * render methods.
      */
+
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
+            if (enemy.x >= canvas.width ){
+                enemy.x = Math.floor((Math.random()*4)+ 0)*101;
+            }
         });
-        player.update();
+        player.update(dt,canvas);
+        
     }
+
+    function checkCollisions(player,allEnemies,dt) {
+        for (var enemyObj in allEnemies){
+
+            var collisionX, collisionY ;
+            collisionX = Math.abs(player.x - allEnemies[enemyObj].x);
+            collisionY = Math.abs(player.y - allEnemies[enemyObj].y);
+            if ((collisionX < 2) && (collisionY < 2))
+                {
+                    //reset the player to its original position
+
+                    player.x = 2*101;
+                    player.y = 5*83;
+
+                }
+            }
+    }
+
+//checks whether the player has reached the water and if true then shows that the game is over
+    function checkGameOver(player){
+
+        if (player.y == 0)
+        {
+            ctx.font = "36pt Impact";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "blue";
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 3;
+            ctx.fillText("Game Over",canvas.width/2,50);     
+            ctx.strokeText("Game Over",canvas.width/2,50);  
+            isGameOver = true;
+
+        }
+    }
+
 
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
@@ -161,6 +209,7 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+     
     }
 
     /* Go ahead and load all of the images we know we're going to need to

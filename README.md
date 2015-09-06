@@ -1,6 +1,5 @@
-frontend-nanodegree-arcade-game
-===============================
+This game implements the basic functionality as required. This is stated as follows:-
 
-Students should use this rubric: https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797
+In this game there are Player and Enemies (Bugs). The goal of the player is to reach the water, without colliding into any one of the enemies. The player can move left, right, up and down. The enemies move in varying speeds on the paved block portion of the scene. Once a the player collides with an enemy, the game is reset and the player moves back to the start square. Once the player reaches the water the game is over.
 
-for self-checking their submission.
+Refresh the browser to play the game again.
