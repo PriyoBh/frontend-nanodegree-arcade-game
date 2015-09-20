@@ -86,6 +86,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+        checkCollisions(player,allEnemies,dt);
         updateEntities(dt);
         checkCollisions(player,allEnemies,dt);
         checkGameOver(player);
@@ -103,7 +104,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
             if (enemy.x >= canvas.width ){
-                enemy.x = Math.floor((Math.random()*4)+ 0)*101;
+                enemy.x = Math.floor((Math.random()*4)+ (-4))*101;
+                //enemy.x = -101;
+
             }
         });
         player.update(dt,canvas);
@@ -116,7 +119,12 @@ var Engine = (function(global) {
             var collisionX, collisionY ;
             collisionX = Math.abs(player.x - allEnemies[enemyObj].x);
             collisionY = Math.abs(player.y - allEnemies[enemyObj].y);
-            if ((collisionX < 2) && (collisionY < 2))
+
+// each block in the canvas is 101 by 83. So if the distance between the player and enemy is
+// less than half the block dimension (x and y) that means they are in the same block -- which means that
+// a collision has occurred or going to occur immediately.
+
+            if ((collisionX < 50) && (collisionY < 41))
                 {
                     //reset the player to its original position
 
